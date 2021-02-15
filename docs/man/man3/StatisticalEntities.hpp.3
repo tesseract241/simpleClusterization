@@ -1,0 +1,278 @@
+.TH "include/StatisticalEntities.hpp" 3 "Mon Feb 15 2021" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/StatisticalEntities.hpp \- This is a simple library that provides basic functionality to clusterize data according to either kmeans or fuzzy cmeans algorithms\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <Eigen/Dense>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBFCM_MAX_ITERATIONS\fP   20"
+.br
+.RI "The maximum number of iterations to do if the algorithm doesn't otherwise converge\&. "
+.ti -1c
+.RI "#define \fBFCM_THRESHOLD\fP   1\&.0E\-19"
+.br
+.RI "The threshold below which real numbers are deemed identical, used to avoid infinite weights and determine when the algorithm has converged\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef Matrix< float, Dynamic, Dynamic, RowMajor > \fBMatrixXfR\fP"
+.br
+.RI "Shorthand type for a RowMajor Matrix of floats\&. "
+.ti -1c
+.RI "typedef Matrix< bool, Dynamic, Dynamic > \fBMatrixXb\fP"
+.br
+.RI "Shorthand type for a ColMajor Matrix of bools\&. "
+.ti -1c
+.RI "typedef Matrix< bool, Dynamic, Dynamic, RowMajor > \fBMatrixXbR\fP"
+.br
+.RI "Shorthand type for a RowMajor Matrix of bools\&. "
+.ti -1c
+.RI "typedef float \fBsquaredNorm_t\fP(const VectorXf &v1, const VectorXf &v2)"
+.br
+.RI "The type signature for the norm parameters of the functions in this library\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "float \fBeuclideanNorm\fP (const VectorXf &v1, const VectorXf &v2)"
+.br
+.RI "A basic example of norm that satisfies the type signature\&. "
+.ti -1c
+.RI "void \fBcalculateFuzzyWeights\fP (const Ref< const MatrixXf > &entities, const Ref< const MatrixXf > &centroids, Ref< \fBMatrixXfR\fP > weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "This function calculates the weights of a fuzzy c-means clusterization, according to the next formula: w_ij = 1 / (norm(centroids(i), entities(j))) "
+.ti -1c
+.RI "void \fBFCMGenerator\fP (const Ref< const MatrixXf > &entities, Ref< MatrixXf > centroids, Ref< \fBMatrixXfR\fP > weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Generates a fixed number of clusters and their fuzzy weights\&. "
+.ti -1c
+.RI "float \fBdaviesBouldinIndex\fP (const Ref< const MatrixXf > &entities, const Ref< const MatrixXf > &centroids, const Ref< const \fBMatrixXb\fP > &weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Returns a measure of the fit of the clusterization, it's strictly positive and the smaller it is, the best the fit\&. "
+.ti -1c
+.RI "float \fBsilhouetteTest\fP (const Ref< const MatrixXf > &entities, const Ref< const MatrixXf > &clusters, const Ref< const \fBMatrixXfR\fP > &weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Returns a measure of how well the clusters fit the data\&. "
+.ti -1c
+.RI "void \fBcalculateBooleanWeights\fP (const Ref< const MatrixXf > &entities, const Ref< const MatrixXf > &centroids, Ref< \fBMatrixXbR\fP > weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Given a dataset and centroids, returns a weights matrix that is true if the j-th centroid is the closest to the i-th datapoint, and false otherwise\&. "
+.ti -1c
+.RI "void \fBkmeansGenerator\fP (const Ref< const MatrixXf > &entities, Ref< MatrixXf > centroids, Ref< \fBMatrixXbR\fP > weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Given a dataset and a centroids matrix of k rows, it tries to identify the most probable k centroids to represent the dataset\&. "
+.ti -1c
+.RI "int \fBclusterGeneratorApproximate\fP (const Ref< const MatrixXf > &entities, Ref< MatrixXf > centroids, Ref< \fBMatrixXfR\fP > weights, Ref< \fBMatrixXbR\fP > boolWeights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Finds the best fitting number of clusters for the given datapoints, up to the number of rows of centroids through an approximated algorithm compared to full fuzzy c-means\&. "
+.ti -1c
+.RI "int \fBclusterGeneratorExact\fP (const Ref< const MatrixXf > &entities, Ref< MatrixXf > centroids, \fBMatrixXfR\fP &weights, \fBsquaredNorm_t\fP *norm)"
+.br
+.RI "Finds the best fitting number of clusters for the given datapoints, up to the number of rows of centroids using the fuzzy c-means algorithm\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const float \fBoffsetConstant\fP = 0\&.05"
+.br
+.RI "A constant used in offsetting the centroids of one-datapoint clusters in fuzzy-cmeans, to avoid infinite weights\&. "
+.ti -1c
+.RI "const int \fBattemptsPerClustersNumber\fP = 3"
+.br
+.RI "The number of different seeds to try for each value of clusters number when attempting a clusterization\&. "
+.ti -1c
+.RI "const int \fBmaxIterationPerClustersNumber\fP = 5"
+.br
+.RI "If empty clusters happen, the algorithm for that number of clusters fails, so we try up to this number of times if this happens\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is a simple library that provides basic functionality to clusterize data according to either kmeans or fuzzy cmeans algorithms\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "void calculateBooleanWeights (const Ref< const MatrixXf > & entities, const Ref< const MatrixXf > & centroids, Ref< \fBMatrixXbR\fP > weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Given a dataset and centroids, returns a weights matrix that is true if the j-th centroid is the closest to the i-th datapoint, and false otherwise\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters 
+.br
+\fIweights\fP The weights associating each centroid to its cluster (it's an array of bools) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+
+.SS "void calculateFuzzyWeights (const Ref< const MatrixXf > & entities, const Ref< const MatrixXf > & centroids, Ref< \fBMatrixXfR\fP > weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+This function calculates the weights of a fuzzy c-means clusterization, according to the next formula: w_ij = 1 / (norm(centroids(i), entities(j))) 
+.PP
+\fBNote\fP
+.RS 4
+The weights are not normalized, as depending on the use case the normalization will be columns-wise or row-wise 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters 
+.br
+\fIweights\fP The resulting weights 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+
+.SS "int clusterGeneratorApproximate (const Ref< const MatrixXf > & entities, Ref< MatrixXf > centroids, Ref< \fBMatrixXfR\fP > weights, Ref< \fBMatrixXbR\fP > boolWeights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Finds the best fitting number of clusters for the given datapoints, up to the number of rows of centroids through an approximated algorithm compared to full fuzzy c-means\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters 
+.br
+\fIweights\fP The weights associating each centroid to its cluster (it's an array of floats) 
+.br
+\fIboolWeights\fP The weights associating each centroid to its cluster (it's an array of bools) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the number of clusters generated 
+.RE
+.PP
+
+.SS "int clusterGeneratorExact (const Ref< const MatrixXf > & entities, Ref< MatrixXf > centroids, \fBMatrixXfR\fP & weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Finds the best fitting number of clusters for the given datapoints, up to the number of rows of centroids using the fuzzy c-means algorithm\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters 
+.br
+\fIweights\fP The weights associating each centroid to its cluster (it's an array of floats) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the number of clusters generated 
+.RE
+.PP
+
+.SS "float daviesBouldinIndex (const Ref< const MatrixXf > & entities, const Ref< const MatrixXf > & centroids, const Ref< const \fBMatrixXb\fP > & weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Returns a measure of the fit of the clusterization, it's strictly positive and the smaller it is, the best the fit\&. The Davies-Boulding Index defines a measure of the 'goodness' of a clusterization of a data population based on the following quantities: The scatter vector S_i= (1/T_i * sum_j (norm(C_i, X_j)))^(1/2) where T_i is the population size of the i-th cluster and the sum runs over the datapoints belonging to the i-th cluster The Cluster Separation Matrix M_ij = (norm(C_i, C_j))^(1/2) The Davies-Bouldin Matrix R_ij = (S_i + S_j)/M_ij The Davies-Bouldin Vector R_i = max_(j!=i) R_ij The Davies-Bouldin index is, in terms of the previous quantities, R = 1/N * sum_i R_i where N is the number of clusters 
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters 
+.br
+\fIweights\fP The weights associating each centroid to its cluster (it's an array of bools) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The Davies-Boulding index of the provided clusterization 
+.RE
+.PP
+
+.SS "void FCMGenerator (const Ref< const MatrixXf > & entities, Ref< MatrixXf > centroids, Ref< \fBMatrixXfR\fP > weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Generates a fixed number of clusters and their fuzzy weights\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters\&. The number of rows are the required clusters to find 
+.br
+\fIweights\fP The weights associated with the clusterization (array of floats) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+
+.SS "void kmeansGenerator (const Ref< const MatrixXf > & entities, Ref< MatrixXf > centroids, Ref< \fBMatrixXbR\fP > weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Given a dataset and a centroids matrix of k rows, it tries to identify the most probable k centroids to represent the dataset\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIcentroids\fP The centroids of the clusters 
+.br
+\fIweights\fP The weights associating each centroid to its cluster (it's an array of bools) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+
+.SS "float silhouetteTest (const Ref< const MatrixXf > & entities, const Ref< const MatrixXf > & clusters, const Ref< const \fBMatrixXfR\fP > & weights, \fBsquaredNorm_t\fP * norm)"
+
+.PP
+Returns a measure of how well the clusters fit the data\&. 
+.PP
+\fBWarning\fP
+.RS 4
+TODO \fBNot implemented\fP 
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIentities\fP The datapoints 
+.br
+\fIclusters\fP The centroids of the clusters 
+.br
+\fIweights\fP The weights associating each centroid to its cluster (it's an array of floats) 
+.br
+\fInorm\fP A pointer to the norm function you want to use 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+the fitness of the clusterization 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
