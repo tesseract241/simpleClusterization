@@ -3,7 +3,7 @@
 #include <cfloat>
 #include <random>
 #include <iostream>
-#include <StatisticalEntities.hpp>
+#include <simpleClusterization.hpp>
 
 using namespace Eigen;
 
@@ -294,17 +294,4 @@ int clusterGeneratorExact(
         }
     }
     return centroidsNumber;
-}
-
-void generateCollectiveWeights(
-        const Ref<const MatrixXfR>  weights, 
-        Ref<MatrixXfR>              collectiveWeights, 
-        float                       lerpFactor
-    ){
-    const int statisticalEntitiesNumber = weights.rows();
-    const int startingEntitiesNumber = weights.cols();
-    collectiveWeights.topLeftCorner     (startingEntitiesNumber,    startingEntitiesNumber      )   = lerpFactor        * MatrixXf::Identity(startingEntitiesNumber, startingEntitiesNumber);
-    collectiveWeights.topRightCorner    (startingEntitiesNumber,    statisticalEntitiesNumber   )   = (1. - lerpFactor) * weights.transpose().rowwise().normalized();
-    collectiveWeights.bottomLeftCorner  (statisticalEntitiesNumber, startingEntitiesNumber      )   = (1. - lerpFactor) * weights.rowwise().normalized(); 
-    collectiveWeights.bottomRightCorner (statisticalEntitiesNumber, statisticalEntitiesNumber   )   =  lerpFactor       * MatrixXf::Identity(statisticalEntitiesNumber, statisticalEntitiesNumber);
 }
