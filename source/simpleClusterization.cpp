@@ -3,6 +3,7 @@
 #include <cfloat>
 #include <random>
 #include <iostream>
+#include <simpleClusterization_common.hpp>
 #include <simpleClusterization.hpp>
 
 using namespace Eigen;

@@ -1,5 +1,5 @@
 #pragma once
-///@file StatisticalEntities.hpp
+///@file simpleClusterization.hpp
 ///@brief This is a simple library that provides basic functionality to clusterize data according to either kmeans or fuzzy cmeans algorithms
 
 #include <Eigen/Dense>
@@ -15,6 +15,7 @@
 #define FCM_THRESHOLD   1.0E-19
 #endif
 
+#include <simpleClusterization_common.hpp>
 using namespace Eigen;
 
 ///A constant used in offsetting the centroids of one-datapoint clusters in fuzzy-cmeans, to avoid infinite weights
@@ -25,18 +26,6 @@ const int   attemptsPerClustersNumber       = 3;
 const int   maxIterationPerClustersNumber   = 5;
 
 
-///Shorthand type for a RowMajor Matrix of floats
-typedef Matrix<float, Dynamic, Dynamic, RowMajor>   MatrixXfR;
-///Shorthand type for a ColMajor Matrix of bools
-typedef Matrix<bool, Dynamic, Dynamic>              MatrixXb;
-///Shorthand type for a RowMajor Matrix of bools
-typedef Matrix<bool, Dynamic, Dynamic, RowMajor>    MatrixXbR;
-
-///The type signature for the norm parameters of the functions in this library
-typedef float squaredNorm_t(const VectorXf &v1, const VectorXf &v2);
-
-///A basic example of norm that satisfies the type signature
-float euclideanNorm(const VectorXf &v1, const VectorXf &v2);
 
 /*!
  * @brief       This function calculates the weights of a fuzzy c-means clusterization, according to the next formula:
