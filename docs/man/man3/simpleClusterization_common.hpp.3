@@ -1,0 +1,52 @@
+.TH "include/simpleClusterization_common.hpp" 3 "Fri Feb 19 2021" "simpleClusterization" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/simpleClusterization_common.hpp \- common definitions that users of the library might need independently from the rest of the files 
+.br
+  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <Eigen/Dense>\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef Matrix< float, Dynamic, Dynamic, RowMajor > \fBMatrixXfR\fP"
+.br
+.RI "Shorthand type for a RowMajor Matrix of floats\&. "
+.ti -1c
+.RI "typedef Matrix< bool, Dynamic, Dynamic > \fBMatrixXb\fP"
+.br
+.RI "Shorthand type for a ColMajor Matrix of bools\&. "
+.ti -1c
+.RI "typedef Matrix< bool, Dynamic, Dynamic, RowMajor > \fBMatrixXbR\fP"
+.br
+.RI "Shorthand type for a RowMajor Matrix of bools\&. "
+.ti -1c
+.RI "typedef float \fBsquaredNorm_t\fP(const VectorXf &v1, const VectorXf &v2)"
+.br
+.RI "The type signature for the norm parameters of the functions in this library\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "float \fBeuclideanNorm\fP (const VectorXf &v1, const VectorXf &v2)"
+.br
+.RI "A basic example of norm that satisfies the type signature\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+common definitions that users of the library might need independently from the rest of the files 
+.br
+ 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for simpleClusterization from the source code\&.
